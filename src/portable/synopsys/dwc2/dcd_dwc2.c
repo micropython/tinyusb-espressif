@@ -483,16 +483,9 @@ bool dcd_init(uint8_t rhport, const tusb_rhport_init_t* rh_init) {
   // Force device mode
   dwc2->gusbcfg = (dwc2->gusbcfg & ~GUSBCFG_FHMOD) | GUSBCFG_FDMOD;
 
-  // OTG Ctrl
-  uint32_t gotgctl = dwc2->gotgctl & ~GOTGCTL_AVALOEN; // Clear A-override
-  if (!_tud_cfg.vbus_sensing) {
-    gotgctl |= GOTGCTL_BVALOEN | GOTGCTL_BVALOVAL;     // force B Valid if not sensing VBus
-  }
-  dwc2->gotgctl = gotgctl;
+  // No overrides
+  dwc2->gotgctl &= ~(GOTGCTL_BVALOEN | GOTGCTL_BVALOVAL | GOTGCTL_VBVALOVAL);
 
-  #ifdef TUP_USBIP_DWC2_STM32
-  dwc2_stm32_gccfg_cfg(dwc2, _tud_cfg.vbus_sensing, false);
-  #endif
 
   // Enable required interrupts
   dwc2->gintmsk |= GINTMSK_OTGINT | GINTMSK_USBRST | GINTMSK_ENUMDNEM | GINTMSK_WUIM;
