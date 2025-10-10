@@ -798,16 +798,17 @@ static void handle_rxflvl_irq(uint8_t rhport) {
           dfifo_read_packet(dwc2, xfer->buffer, byte_count);
           xfer->buffer += byte_count;
         }
+      }
 
-        // short packet, minus remaining bytes (xfer_size)
-        if (byte_count < xfer->max_size) {
-          xfer->total_len -= epout->tsiz_bm.xfer_size;
-          if (epnum == 0) {
-            xfer->total_len -= _dcd_data.ep0_pending[TUSB_DIR_OUT];
-            _dcd_data.ep0_pending[TUSB_DIR_OUT] = 0;
-          }
+      // short packet (including ZLP when byte_count == 0), minus remaining bytes (xfer_size)
+      if (byte_count < xfer->max_size) {
+        xfer->total_len -= epout->tsiz_bm.xfer_size;
+        if (epnum == 0) {
+          xfer->total_len -= _dcd_data.ep0_pending[TUSB_DIR_OUT];
+          _dcd_data.ep0_pending[TUSB_DIR_OUT] = 0;
         }
       }
+
       break;
     }
 
