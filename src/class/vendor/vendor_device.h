@@ -190,7 +190,11 @@ TU_ATTR_ALWAYS_INLINE static inline uint32_t tud_vendor_write_available(void) {
 // Invoked when received new data.
 // - CFG_TUD_VENDOR_TXRX_BUFFERED = 1: buffer and bufsize must not be used (both NULL,0) since data is in RX FIFO
 // - CFG_TUD_VENDOR_TXRX_BUFFERED = 0: Buffer and bufsize are valid
+#if CFG_TUD_API_V0_19_COMPAT
+void tud_vendor_rx_cb(uint8_t idx, const uint8_t *buffer, uint16_t bufsize);
+#else
 void tud_vendor_rx_cb(uint8_t idx, const uint8_t *buffer, uint32_t bufsize);
+#endif
 
 // Invoked when tx transfer is finished
 void tud_vendor_tx_cb(uint8_t idx, uint32_t sent_bytes);

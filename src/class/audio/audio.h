@@ -1276,6 +1276,9 @@ typedef audio10_desc_cs_ac_interface_n_t(1) audio10_desc_cs_ac_interface_1_t;
 
 /** @} */
 
+#define TU_AUDIO_COMPAT_UAC2_TYPES_READY 1
+#include "audio_compat.h"
+
 #ifdef __cplusplus
 }
 #endif
