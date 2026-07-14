@@ -1064,8 +1064,20 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
 #define TUD_CDC_NCM_DESC_LEN  (8+9+5+5+13+6+7+9+9+7+7)
 
 // CDC-NCM Descriptor Template
-// Interface number, description string index, MAC address string index, EP notification address and size, EP data address (out, in), and size, max segment size, EP notification bInterval, capability.
-#define TUD_CDC_NCM_DESCRIPTOR(_itfnum, _desc_stridx, _mac_stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize, _maxsegmentsize, _ep_notif_interval, _capability) \
+// This is backward compatibility macro
+// TinyUSB v0.19 and below had NCM_DESCRIPTOR macro take 9 arguments
+// From TinyUSB v0.21 it takes 11 argument
+
+// 9 args : itfnum, desc stridx, MAC stridx, EP notif + size, EP out/in + size, max segment size
+//          (bInterval defaults to 50, capability defaults to (NCM_NETWORK_CAPS_ETH_FILTER | NCM_NETWORK_CAPS_NTB_INPUT_SIZE) so it works with TinyUSB 0.21 NCM driver)
+// 11 args: same + EP notification bInterval, NCM bmNetworkCapabilities
+#define TUD_CDC_NCM_DESCRIPTOR(...) \
+  TU_XSTRCAT(TUD_CDC_NCM_DESCRIPTOR_arg, TU_ARGS_NUM(__VA_ARGS__))(__VA_ARGS__)
+
+#define TUD_CDC_NCM_DESCRIPTOR_arg9(_itfnum, _desc_stridx, _mac_stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize, _maxsegmentsize) \
+  TUD_CDC_NCM_DESCRIPTOR_arg11(_itfnum, _desc_stridx, _mac_stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize, _maxsegmentsize, 50, (NCM_NETWORK_CAPS_ETH_FILTER | NCM_NETWORK_CAPS_NTB_INPUT_SIZE))
+
+#define TUD_CDC_NCM_DESCRIPTOR_arg11(_itfnum, _desc_stridx, _mac_stridx, _ep_notif, _ep_notif_size, _epout, _epin, _epsize, _maxsegmentsize, _ep_notif_interval, _capability) \
   /* Interface Association */\
   8, TUSB_DESC_INTERFACE_ASSOCIATION, _itfnum, 2, TUSB_CLASS_CDC, CDC_COMM_SUBCLASS_NETWORK_CONTROL_MODEL, 0, 0,\
   /* CDC Control Interface */\

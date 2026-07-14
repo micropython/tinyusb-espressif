@@ -332,7 +332,7 @@
 #endif
 
 #if defined(TUP_USBIP_DWC2)
-  #define CFG_TUD_EDPT_DEDICATED_HWFIFO    CFG_TUD_DWC2_SLAVE_ENABLE
+  #define CFG_TUD_EDPT_DEDICATED_HWFIFO    !CFG_TUD_DWC2_DMA_ENABLE
   #define CFG_TUH_EDPT_DEDICATED_HWFIFO    CFG_TUH_DWC2_SLAVE_ENABLE
 
   #define CFG_TUSB_FIFO_HWFIFO_DATA_STRIDE 4 // 32bit access
@@ -667,6 +667,11 @@
 
 #ifndef CFG_TUD_VENDOR
   #define CFG_TUD_VENDOR          0
+#endif
+
+// Enable TinyUSB v0.19 API compatibility (e.g. tud_vendor_rx_cb uint16_t bufsize)
+#ifndef CFG_TUD_API_V0_19_COMPAT
+  #define CFG_TUD_API_V0_19_COMPAT  1
 #endif
 
 #ifndef CFG_TUD_USBTMC
